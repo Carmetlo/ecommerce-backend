@@ -4,19 +4,66 @@ const { Product, Category, Tag, ProductTag } = require('../../models');
 // The `/api/products` endpoint
 
 // get all products
-router.get('/', (req, res) => {
   // find all products
   // be sure to include its associated Category and Tag data
+router.get('/', (req, res) => {
+  Product.findAll({
+    include: [
+      {
+        model: Category,attributes: ['category_name']}
+      ,{ model: Tag, through: ProductTag, attributes: ['tag_name']
+      }
+    ]
+  })
+
+
 });
 
 // get one product
-router.get('/:id', (req, res) => {
   // find a single product by its `id`
   // be sure to include its associated Category and Tag data
+router.get('/:id', (req, res) => {
+
+  Category.findOne({
+    where: {
+      id: req.params.id
+    },
+    include: [
+      {
+        model: Product,attributes: ['product_name']},
+        { model: Tag, through: ProductTag, attributes: ['tag_name']
+      }
+    ]
+  }).then(dbCategoryData => {
+    if (!dbCategoryData) {
+      res.status(404).json({ message: 'No Product found with this id' })
+      return;
+    }
+    res.json(dbCategoryData);
+  })
 });
 
 // create new product
 router.post('/', (req, res) => {
+  Product.create({
+    product_name: req.body.product_name,
+    price: req.body.price,
+    stock: req.body.stock,
+    category_id: req.body.category_id
+  })
+  .then((product) => {
+    if (req.body.tagIds.length) {
+      const productTagIdArr = req.body.tagIds.map((tag_id) => {
+        return {
+          product_id: product.id,
+          tag_id,
+        };
+      });
+      return ProductTag.bulkCreate(productTagIdArr);
+    }
+    // if no product tags, just respond
+    res.status(200).json(product);
+  }
   /* req.body should look like this...
     {
       product_name: "Basketball",

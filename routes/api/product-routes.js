@@ -15,16 +15,18 @@ router.get('/', (req, res) => {
       }
     ]
   })
-
-
+  .then(dbProductData => res.json(dbProductData))
+  .catch(err => {
+    console.log(err);
+    res.status(500).json(err)
+  });
 });
 
 // get one product
   // find a single product by its `id`
   // be sure to include its associated Category and Tag data
 router.get('/:id', (req, res) => {
-
-  Category.findOne({
+  Product.findOne({
     where: {
       id: req.params.id
     },
@@ -45,14 +47,9 @@ router.get('/:id', (req, res) => {
 
 // create new product
 router.post('/', (req, res) => {
-  Product.create({
-    product_name: req.body.product_name,
-    price: req.body.price,
-    stock: req.body.stock,
-    category_id: req.body.category_id
-  })
+  Product.create(req.body)
   .then((product) => {
-    if (req.body.tagIds.length) {
+    if (req.body.tagIds && req.body.tagIds.length) {
       const productTagIdArr = req.body.tagIds.map((tag_id) => {
         return {
           product_id: product.id,
@@ -63,7 +60,12 @@ router.post('/', (req, res) => {
     }
     // if no product tags, just respond
     res.status(200).json(product);
-  }
+  })
+  .then((productTagIds) => res.status(200).json(productTagIds))
+  .catch((err) => {
+    console.log(err);
+    res.status(400).json(err);
+  });
   /* req.body should look like this...
     {
       product_name: "Basketball",

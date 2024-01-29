@@ -72,8 +72,11 @@ router.delete('/:id', (req, res) => {
       res.status(404).json({ message: 'No Tag found with this id' })
       return;
     }
-    res.json(dbTagData);
-  })
+    res.json({ message: `Tag with id ${req.params.id} has been deleted successfully.` });
+  }).catch(err => {
+    console.log(err);
+    res.status(500).json({ message: 'Error deleting the tag' });
+  });
 });
 
 module.exports = router;

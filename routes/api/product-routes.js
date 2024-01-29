@@ -31,10 +31,8 @@ router.get('/:id', (req, res) => {
       id: req.params.id
     },
     include: [
-      {
-        model: Product,attributes: ['product_name']},
-        { model: Tag, through: ProductTag, attributes: ['tag_name']
-      }
+      {model: Category,attributes: ['category_name']},
+      { model: Tag, through: ProductTag, attributes: ['tag_name']}
     ]
   }).then(dbCategoryData => {
     if (!dbCategoryData) {

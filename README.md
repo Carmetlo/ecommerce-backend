@@ -94,9 +94,9 @@ dotenv
 
 ## Contributing
 Carmetlo
-Github:
-Linkedin:
+Github:  https://github.com/Carmetlo
+Linkedin:  https://www.linkedin.com/in/michael-carmelo/
 
 ## Links
-Github Repository:
-How-to Video:
+Github Repository:  https://github.com/Carmetlo/ecommerce-backend
+How-to Video:  https://app.screencastify.com/v3/watch/decqRXqWHIJbkLSCSAzv
